@@ -10,8 +10,11 @@ from app.core.database import get_db
 from app.schemas.token import TokenData
 from app.models.user import User,UserRole
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+#tells how clients obtain tokens and swagger authorize function
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
@@ -46,6 +49,16 @@ def get_current_user(
 
     return user
 
+def get_current_admin(current_user = Depends(get_current_user)):
+
+    if current_user.role != UserRole.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+
+    return current_user
+
 def get_current_recruiter(current_user = Depends(get_current_user)):
     if current_user.role != UserRole.recruiter:
         raise HTTPException(
@@ -59,5 +72,13 @@ def get_current_job_seeker(current_user = Depends(get_current_user)):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only job seekers allowed"
+        )
+    return current_user
+
+def get_current_admin(current_user = Depends(get_current_user)):
+    if current_user.role != UserRole.admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Admin access required"
         )
     return current_user

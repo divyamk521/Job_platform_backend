@@ -29,3 +29,15 @@ class UserResponse(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+class UserAdminResponse(BaseModel):
+    id: int
+    name: str
+    email: EmailStr
+    role: UserRole
+    is_active: bool
+    is_deleted: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

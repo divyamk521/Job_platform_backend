@@ -13,6 +13,7 @@ class Job(Base):
 
     image_url = Column(String)
     google_form_link = Column(String)
+    location = Column(String, nullable=True) 
 
     recruiter_id = Column(Integer, ForeignKey("users.id"))
 
